@@ -504,6 +504,11 @@ export class ArmTarget extends PTarget {
     
     protected getSystemIncludes(target: any): string[] | undefined {
         function extractLastPart(str: string): string {
+            // 检查str是否为有效字符串
+            if (!str) {
+                return '';
+            }
+            
             // 1. 找到最后一个 "::" 的位置
             const lastColonIndex = str.lastIndexOf("::");
             
