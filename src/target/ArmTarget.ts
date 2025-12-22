@@ -502,7 +502,7 @@ export class ArmTarget extends PTarget {
         }
     }
 */
-    
+
     protected getSystemIncludes(target: any): string[] | undefined {
         const keilRootDir = new File(ResourceManager.getInstance().getKeilRootDir(this.getKeilPlatform()));
         if (keilRootDir.isDir()) {
@@ -614,7 +614,11 @@ export class ArmTarget extends PTarget {
         const rteFiles = this.processArray(files?.file);
 
         const incSet = new Set<string>();
-        const packsDir = ResourceManager.getInstance().getPackDir(this.getKeilPlatform());
+        // 获取CMSIS_PACK_ROOT环境变量
+        let cmsisPackRoot = process.env.CMSIS_PACK_ROOT;
+        if (cmsisPackRoot === undefined || cmsisPackRoot === '') {
+            cmsisPackRoot = ResourceManager.getInstance().getPackDir(this.getKeilPlatform());
+        }
 
         const pdscCache = new Map<string, any>();
         const parserOptions = {
@@ -635,7 +639,7 @@ export class ArmTarget extends PTarget {
             const cVariant = component['@_Cvariant'];
             const cVersion = component['@_Cversion'];
             const cGroup = component['@_Cgroup'];
-            const cRootDir = join(packsDir, pkgVendor, pkgName, pkgVersion);
+            const cRootDir = join(cmsisPackRoot, pkgVendor, pkgName, pkgVersion);
             const pdscPath = join(cRootDir, `${component['@_Cvendor']}.${pkgName}.pdsc`);
 
             // 带缓存的PDSC解析

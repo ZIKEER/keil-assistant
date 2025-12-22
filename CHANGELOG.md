@@ -2,6 +2,15 @@
 
 All notable changes to the "keil-assistant" extension will be documented in this file.
 
+## [v1.9.24]
+
+### Fixed
+
+- **ArmTarget**: Updated CMSIS pack path resolution logic to support environment variables
+  - Prioritize CMSIS_PACK_ROOT environment variable when retrieving package directories from ResourceManager
+  - Fallback to original default path retrieval method when environment variable is undefined or empty
+  - Fixed variable reference to ensure correct component root directory path construction
+
 ## [v1.9.23]
 
 ### Fixed
