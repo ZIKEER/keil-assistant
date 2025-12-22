@@ -502,9 +502,28 @@ export class ArmTarget extends PTarget {
         }
     }
 */
+    
     protected getSystemIncludes(target: any): string[] | undefined {
+        function extractLastPart(str: string): string {
+            // 1. 找到最后一个 "::" 的位置
+            const lastColonIndex = str.lastIndexOf("::");
+            
+            if (lastColonIndex === -1) {
+                // 如果没有找到 "::"，返回原始字符串（带 trim）
+                return str.trim();
+            }
+            
+            // 2. 提取 "::" 后面的字符串
+            let result = str.substring(lastColonIndex + 2).trim();
+            
+            // 3. 移除开头的 ".\" 前缀（如果存在）
+            if (result.startsWith('.\\')) {
+                result = result.substring(2);
+            }
+            
+            return result;
+        }
         const keilRootDir = new File(ResourceManager.getInstance().getKeilRootDir(this.getKeilPlatform()));
-
         if (keilRootDir.isDir()) {
             const pCCUsed = target['pCCUsed'];
             let toolchain = pCCUsed.split("::")[2];
