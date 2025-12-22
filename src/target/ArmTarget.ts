@@ -5,10 +5,11 @@ import { CmdLineHandler } from '../CmdLineHandler';
 import { execSync } from 'child_process';
 import { XMLParser } from 'fast-xml-parser';
 import { existsSync, statSync, readFileSync, readdirSync } from 'fs';
-import { resolve, join, extname } from 'path';
+import { normalize, resolve, join, extname } from 'path';
 import type { UVisonInfo } from './PTarget';
 import { PTarget } from './PTarget';
 import { MacroHandler } from '../core/MacroHandler';
+
 
 export class ArmTarget extends PTarget {
 
@@ -505,8 +506,13 @@ export class ArmTarget extends PTarget {
         const keilRootDir = new File(ResourceManager.getInstance().getKeilRootDir(this.getKeilPlatform()));
 
         if (keilRootDir.isDir()) {
-            const toolName = target['uAC6'] === 1 ? 'ARMCLANG' : 'ARMCC';
-            const incDir = new File(`${keilRootDir.path}${File.sep}ARM${File.sep}${toolName}${File.sep}include`);
+            const pCCUsed = target['pCCUsed'];
+            let toolchain = pCCUsed.split("::")[2];
+            if (toolchain === null || toolchain === '') {
+                toolchain = target['uAC6'] === 1 ? 'ARMCLANG' : 'ARMCC';;
+            }
+            const incDirPath = normalize(`${keilRootDir.path}${File.sep}ARM${File.sep}${toolchain}${File.sep}include`);
+            const incDir = new File(incDirPath);
             const incPath = incDir.path.replace(/\\/g, '/');
             if (incDir.isDir()) {
                 return [incPath].concat(
@@ -795,7 +801,7 @@ export class ArmTarget extends PTarget {
     }
 
     protected getCStandard(target: any): string {
-        if (target['uAC6'] !== 1) return 'c17'
+        // if (target['uAC6'] !== 1) return 'c17'
         /**
          * 0：default  → C 语言标准
          * 1：C90      → 对应uC90
@@ -829,7 +835,7 @@ export class ArmTarget extends PTarget {
         }
     }
     protected getCppStandard(target: any): string {
-        if (target['uAC6'] !== 1) return 'c++17'
+        // if (target['uAC6'] !== 1) return 'c++17'
         /**
          * 0: default  → C++语言标准
          * 1: C++98    → 对应uC++98
@@ -844,7 +850,7 @@ export class ArmTarget extends PTarget {
          */
         const dat = target['TargetOption']['TargetArmAds']['Cads'];
         const v6Langp = dat['v6LangP'];
-        
+
         switch (v6Langp) {
             case 1:
                 return 'c++98';

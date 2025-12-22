@@ -3,15 +3,14 @@ import { EventEmitter as EventsEmitter } from 'events';
 import { File } from "../node_utility/File";
 import type { KeilProjectInfo } from "../core/KeilProjectInfo";
 import type { OutputChannel } from "vscode";
-import { commands, InlayHint, l10n, window } from "vscode";
+import { commands, l10n, window } from "vscode";
 import { FileGroup } from "../core/FileGroup";
 import { normalize, resolve } from 'path';
 import { ResourceManager } from "../ResourceManager";
 import { Source } from "../core/Source";
 import { closeSync, openSync, readSync, statSync, watchFile, writeFileSync } from "fs";
 import { execSync, spawn } from "child_process";
-import { decode } from "iconv-lite";
-import * as yaml from 'js-yaml';
+import iconv from 'iconv-lite';
 import { CompileCommand, CppProperty } from "./comm";
 import path = require("path");
 import { existsSync } from 'fs';
@@ -468,7 +467,7 @@ export abstract class PTarget implements IView {
     }
 
     dealLog(logTxt: Buffer): string {
-        let logStr = decode(logTxt, 'cp936');
+        let logStr = iconv.decode(logTxt, 'cp936');
         const srcFileExp = /((\.\.\/)?.*\..\(\d+\)):/g;
 
         if (srcFileExp.test(logStr)) {

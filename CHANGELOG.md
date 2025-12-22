@@ -2,6 +2,32 @@
 
 All notable changes to the "keil-assistant" extension will be documented in this file.
 
+## [v1.9.23]
+
+### Fixed
+
+- **ArmTarget**: Updated toolchain path resolution logic to support new format
+  - #90 Fixed the logic for extracting toolchain name from target configuration, now prioritizing the `pCCUsed` field
+  - Falling back to the original `uAC6` judgment method when necessary
+  - Introduced path.normalize to ensure cross-platform compatibility
+
+### Added
+
+- **PTarget**: Replaced iconv-lite import method and updated decoding call
+  - Changed iconv-lite from named import to default import
+  - Modified decode method call to adapt to the new version API changes of this dependency
+
+### Dependency Updates
+
+- **chore(deps)**: Upgraded multiple development and build dependency package versions
+  - Upgraded @vscode/vsce to the latest stable version
+  - Upgraded chokidar to the latest stable version
+  - Upgraded fast-xml-parser to the latest stable version
+  - Upgraded iconv-lite to the latest stable version
+  - Upgraded mocha to the latest stable version
+  - Upgraded oxlint to the latest stable version
+  - Upgraded esbuild to the latest stable version
+
 ## [v1.9.22]
 
 - Refactored:
